@@ -59,14 +59,11 @@ builder.Services.Configure<ForwardedHeadersOptions>(options =>
 });
 
 // --- Auth -----------------------------------------------------------------
-// ASP.NET Core Identity, backed by the same AppDbContext. The relaxed password
-// policy exists only so the local admin/test login works in Development.
+// ASP.NET Core Identity, backed by the same AppDbContext. Same strict policy everywhere:
+// local runs use the same remote database as production, so there is no "dev password".
 builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     {
-        options.Password.RequireDigit = !isDevelopment;
-        options.Password.RequireUppercase = !isDevelopment;
-        options.Password.RequireNonAlphanumeric = !isDevelopment;
-        options.Password.RequiredLength = isDevelopment ? 4 : 10;
+        options.Password.RequiredLength = 10;
         options.User.RequireUniqueEmail = false;
     })
     .AddEntityFrameworkStores<AppDbContext>()
@@ -92,8 +89,8 @@ using (var scope = app.Services.CreateScope())
     await db.Database.MigrateAsync();
     await DbSeeder.SeedAsync(db);
 
-    var adminUsername = app.Configuration["Admin:Username"] ?? (isDevelopment ? IdentitySeeder.DevAdminUsername : null);
-    var adminPassword = app.Configuration["Admin:Password"] ?? (isDevelopment ? IdentitySeeder.DevAdminPassword : null);
+    var adminUsername = app.Configuration["Admin:Username"];
+    var adminPassword = app.Configuration["Admin:Password"];
     if (string.IsNullOrEmpty(adminUsername) || string.IsNullOrEmpty(adminPassword))
     {
         app.Logger.LogWarning("Admin:Username / Admin:Password not set — no admin account was seeded.");

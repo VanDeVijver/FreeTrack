@@ -3,15 +3,13 @@ using Microsoft.AspNetCore.Identity;
 namespace FreeTrack.Infrastructure.Persistence.Seed;
 
 /// <summary>
-/// Seeds the single admin account. Development falls back to the well-known
-/// admin/test login below; production must supply Admin:Username/Admin:Password
-/// (env vars Admin__Username / Admin__Password) or no admin is created.
+/// Seeds the single admin account from the credentials passed in (Admin:Username /
+/// Admin:Password — user-secrets locally, env vars in production). There is deliberately
+/// no default login: the database is remote, so a well-known password would be public.
 /// </summary>
 public static class IdentitySeeder
 {
     public const string AdminRole = "Admin";
-    public const string DevAdminUsername = "admin";
-    public const string DevAdminPassword = "test";
 
     public static async Task SeedAdminAsync(
         UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager,
