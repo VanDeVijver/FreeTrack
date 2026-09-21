@@ -4,8 +4,7 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     region: frankfurt
-    # Free instances block outbound SMTP (587/465), so booking emails need a paid plan.
-    plan: 0.5c-512mb
+    plan: free
     healthCheckPath: /healthz
     autoDeployTrigger: commit
     envVars:
@@ -19,12 +18,9 @@ services:
         sync: false
       - key: Admin__Password
         sync: false
-      # Booking notification emails (Gmail SMTP + app password).
-      - key: Smtp__Username
+      # Booking notification emails via Resend's HTTPS API (the free plan blocks SMTP).
+      - key: Email__ApiKey
         sync: false
-      - key: Smtp__Password
-        sync: false
-      - key: Smtp__FromAddress
-        sync: false
-      - key: Smtp__AdminEmail
+      # Must be the email address the Resend account was created with until a domain is verified.
+      - key: Email__AdminEmail
         sync: false
