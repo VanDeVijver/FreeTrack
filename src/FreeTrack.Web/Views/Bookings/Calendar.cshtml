@@ -1,0 +1,56 @@
+@model CalendarViewModel
+@{
+    ViewData["Title"] = $"Beschikbaarheid — {Model.Calendar.RoomName}";
+    var monthDate = new DateTime(Model.Calendar.Year, Model.Calendar.Month, 1);
+    var prevMonth = monthDate.AddMonths(-1);
+    var nextMonth = monthDate.AddMonths(1);
+    var culture = new System.Globalization.CultureInfo("nl-BE");
+}
+
+<section class="calendar-page">
+    <p class="kicker">BESCHIKBAARHEID</p>
+    <h1 class="display-heading">@Model.Calendar.RoomName</h1>
+    <p>Dit toont beschikbaarheid, geen prijzen. Een aanvraag is geen bevestiging — we beoordelen elke aanvraag handmatig.</p>
+
+    <div class="room-switch">
+        @foreach (var room in Model.AllRooms)
+        {
+            <a class="room-switch__link @(room.Slug == Model.RoomSlug ? "is-active" : "")"
+               asp-action="Calendar" asp-route-roomSlug="@room.Slug">@room.Name</a>
+        }
+    </div>
+
+    <div class="calendar-nav">
+        <a asp-action="Calendar" asp-route-roomSlug="@Model.RoomSlug" asp-route-year="@prevMonth.Year" asp-route-month="@prevMonth.Month" aria-label="Vorige maand">&larr;</a>
+        <span>@monthDate.ToString("MMMM yyyy", culture)</span>
+        <a asp-action="Calendar" asp-route-roomSlug="@Model.RoomSlug" asp-route-year="@nextMonth.Year" asp-route-month="@nextMonth.Month" aria-label="Volgende maand">&rarr;</a>
+    </div>
+
+    <div class="calendar-grid">
+        @foreach (var day in Model.Calendar.Days)
+        {
+            var statusClass = day.Status.ToString().ToLowerInvariant();
+            <div class="calendar-day calendar-day--@statusClass">
+                <span class="calendar-day__number">@day.Date.Day</span>
+                @if (day.Status == CalendarDayStatus.Available)
+                {
+                    <a class="calendar-day__link" asp-action="Request" asp-route-roomSlug="@Model.RoomSlug" asp-route-date="@day.Date.ToString("yyyy-MM-dd")">Aanvragen</a>
+                }
+                else if (day.Status == CalendarDayStatus.Booked)
+                {
+                    <span class="calendar-day__label">Bezet</span>
+                }
+                else if (day.Status == CalendarDayStatus.Pending)
+                {
+                    <span class="calendar-day__label">In aanvraag</span>
+                }
+            </div>
+        }
+    </div>
+
+    <div class="calendar-legend">
+        <span><i class="legend-swatch legend-swatch--available"></i> Beschikbaar</span>
+        <span><i class="legend-swatch legend-swatch--pending"></i> In aanvraag</span>
+        <span><i class="legend-swatch legend-swatch--booked"></i> Bezet</span>
+    </div>
+</section>

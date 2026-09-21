@@ -1,0 +1,49 @@
+@model HomeViewModel
+
+<section class="rooms" id="rooms">
+    <div class="rooms__intro">
+        <p class="kicker">THE ROOMS</p>
+        <span class="rooms__coords" aria-hidden="true">50°59'N / 03°52'E</span>
+        <h2 class="display-heading">
+            Find your<br />
+            <span class="display-heading__accent">frequency.</span>
+        </h2>
+        <p class="rooms__lede">
+            Drie ruimtes. Eén rustige plek aan de rand van het bos. Kies de kamer die past bij wat je vandaag wilt maken.
+        </p>
+    </div>
+
+    <div class="rooms__grid">
+        @foreach (var room in Model.Rooms)
+        {
+            <article class="room-card @room.AccentClass">
+                <img src="@room.ImageUrl" alt="" class="room-card__image" />
+                <div class="room-card__overlay"></div>
+
+                <div class="room-card__top">
+                    <span class="room-card__number">@room.DisplayNumber</span>
+                    <span class="room-card__badge">@room.BadgeLabel</span>
+                </div>
+
+                @if (room.ShowContactCta)
+                {
+                    <a class="btn btn--pill room-card__cta" asp-controller="Bookings" asp-action="Calendar" asp-route-roomSlug="@room.Slug">Bekijk beschikbaarheid</a>
+                }
+
+                <div class="room-card__bottom">
+                    <div>
+                        <h3>@room.Name</h3>
+                        <p class="room-card__subtitle">@room.Subtitle</p>
+                        <p class="room-card__description">@room.Description</p>
+                    </div>
+                    <a class="room-card__arrow" asp-controller="Bookings" asp-action="Calendar" asp-route-roomSlug="@room.Slug" aria-label="Bekijk beschikbaarheid voor @room.Name">&#8599;</a>
+                </div>
+            </article>
+        }
+    </div>
+
+</section>
+
+<section class="cta-band">
+    <p>Klaar om je project een plek te geven? <a href="#contact">Vertel ons erover &rarr;</a></p>
+</section>

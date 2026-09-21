@@ -1,0 +1,45 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    string Active(string name) => controller == name ? "is-active" : "";
+}
+<header class="site-nav" id="top">
+    <div class="site-nav__inner">
+        <a class="site-nav__logo" href="~/#top">
+            <svg class="site-nav__record" viewBox="0 0 40 40" aria-hidden="true" focusable="false">
+                <circle class="disc" cx="20" cy="20" r="19" />
+                <circle class="groove" cx="20" cy="20" r="15.5" />
+                <circle class="groove" cx="20" cy="20" r="12.5" />
+                <circle class="groove" cx="20" cy="20" r="9.5" />
+                <path class="shine" d="M7.5 13.5A14 14 0 0 1 13.5 7.5" />
+                <circle class="label" cx="20" cy="20" r="6" />
+                <circle class="hole" cx="20" cy="20" r="1.2" />
+            </svg>
+            <span class="site-nav__brand">
+                FreeTrack
+                <small>SONIC ADVENTURE PRODUCTIONS</small>
+            </span>
+        </a>
+        <nav class="site-nav__links" aria-label="Hoofdnavigatie">
+            <a href="~/#top" class="@Active("Home")">HOME</a>
+            <a href="~/#diensten">DIENSTEN</a>
+            <a href="~/#rooms">STUDIO'S &amp; LIGGING</a>
+            <a asp-controller="Bookings" asp-action="CalendarIndex" class="@Active("Bookings")">KALENDER</a>
+            <a href="~/#over">OVER FREETRACK</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Admin" asp-action="Index" class="@Active("Admin")">ADMIN</a>
+                }
+                <a asp-controller="Account" asp-action="Profile" class="@Active("Account")">PROFIEL</a>
+                <form asp-controller="Account" asp-action="Logout" method="post">
+                    <button type="submit">UITLOGGEN</button>
+                </form>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Login" class="@Active("Account")">LOGIN</a>
+            }
+        </nav>
+    </div>
+</header>

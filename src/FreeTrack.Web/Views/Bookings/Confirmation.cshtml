@@ -1,0 +1,12 @@
+@{
+    ViewData["Title"] = "Aanvraag verstuurd";
+    var roomSlug = ViewBag.RoomSlug as string;
+    var message = ViewBag.Message as string;
+}
+
+<section class="contact-section">
+    <p class="kicker">BEDANKT</p>
+    <h1 class="display-heading">We hebben je <span class="display-heading__accent">aanvraag.</span></h1>
+    <p class="contact-form__success">@message</p>
+    <a class="link-arrow" asp-controller="Bookings" asp-action="Calendar" asp-route-roomSlug="@roomSlug">Terug naar de kalender &rarr;</a>
+</section>

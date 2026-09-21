@@ -1,0 +1,74 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin — Boekingen";
+}
+
+<section class="admin-dashboard">
+    <div class="admin-dashboard__header">
+        <div>
+            <p class="kicker">ADMIN @(Model.UnreadNotificationCount > 0 ? $"({Model.UnreadNotificationCount} nieuw)" : "")</p>
+            <h1 class="display-heading">Boekingsaanvragen</h1>
+        </div>
+    </div>
+
+    @if (TempData["AdminMessage"] != null)
+    {
+        <p class="contact-form__success">@TempData["AdminMessage"]</p>
+    }
+    @if (TempData["AdminError"] != null)
+    {
+        <p class="contact-form__error">@TempData["AdminError"]</p>
+    }
+
+    <nav class="admin-tabs">
+        <a asp-action="Index" asp-route-status="Pending" class="@(Model.StatusFilter == "Pending" ? "is-active" : "")">In afwachting</a>
+        <a asp-action="Index" asp-route-status="Approved" class="@(Model.StatusFilter == "Approved" ? "is-active" : "")">Goedgekeurd</a>
+        <a asp-action="Index" asp-route-status="Rejected" class="@(Model.StatusFilter == "Rejected" ? "is-active" : "")">Geweigerd</a>
+        <a asp-action="Index" asp-route-status="All" class="@(Model.StatusFilter == "All" ? "is-active" : "")">Alles</a>
+    </nav>
+
+    @if (!Model.Bookings.Any())
+    {
+        <p>Geen boekingen in deze categorie.</p>
+    }
+    else
+    {
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Ruimte</th>
+                    <th>Klant</th>
+                    <th>Periode</th>
+                    <th>Bericht</th>
+                    <th>Status</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var booking in Model.Bookings)
+                {
+                    <tr>
+                        <td>@booking.RoomName</td>
+                        <td>@booking.CustomerName<br /><small>@booking.CustomerEmail</small></td>
+                        <td>@booking.StartUtc.ToString("dd/MM/yyyy")&ndash;@booking.EndUtc.ToString("dd/MM/yyyy")</td>
+                        <td>@booking.Message</td>
+                        <td><span class="status-pill status-pill--@booking.Status.ToLowerInvariant()">@booking.Status</span></td>
+                        <td>
+                            @if (booking.Status == "Pending")
+                            {
+                                <form asp-action="Approve" asp-route-id="@booking.Id" method="post" class="admin-table__action-form">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn--primary btn--small">Goedkeuren</button>
+                                </form>
+                                <form asp-action="Reject" asp-route-id="@booking.Id" method="post" class="admin-table__action-form">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="btn btn--reject btn--small">Weigeren</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</section>

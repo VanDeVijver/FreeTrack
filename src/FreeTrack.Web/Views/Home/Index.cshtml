@@ -1,0 +1,9 @@
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+@await Html.PartialAsync("_Hero", Model)
+@await Html.PartialAsync("_Services", Model)
+@await Html.PartialAsync("_Rooms", Model)
+@await Html.PartialAsync("_Contact", Model)

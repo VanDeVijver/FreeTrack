@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#151414" />
+    <meta name="description" content="FreeTrack — ruimte voor muziek, sound en creatieve projecten." />
+    <title>@ViewData["Title"] - FreeTrack</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    @await Html.PartialAsync("_Nav")
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <a class="scroll-top" href="#top" aria-label="Terug naar boven">&uarr;</a>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

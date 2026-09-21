@@ -1,0 +1,45 @@
+@model HomeViewModel
+@{
+    var featured = Model.Services.FirstOrDefault(s => s.IsFeatured) ?? Model.Services.FirstOrDefault();
+}
+
+<section class="services" id="diensten">
+    <div class="services__intro">
+        <p class="kicker kicker--on-dark">WHAT WE DO</p>
+        <h2 class="display-heading display-heading--on-dark">
+            Gemaakt voor<br />
+            <span class="display-heading__accent">goede ideeën.</span>
+        </h2>
+    </div>
+
+    <p class="services__lede">
+        Van een fluisterende stem tot een zaal die beweegt. We ontwerpen het geluid rond het verhaal, niet andersom.
+    </p>
+
+    <div class="services__grid">
+        <ol class="service-list">
+            @foreach (var service in Model.Services)
+            {
+                <li class="service-row @(service.IsFeatured ? "is-active" : "")"
+                    data-service-id="@service.Id" data-image="@service.ImageUrl">
+                    <span class="service-row__number">@service.Number</span>
+                    <div class="service-row__body">
+                        <span class="service-row__category">@service.Category</span>
+                        <span class="service-row__title">@service.Title</span>
+                    </div>
+                    <span class="service-row__arrow" aria-hidden="true">&#8599;</span>
+                </li>
+            }
+        </ol>
+
+        <div class="service-preview">
+            <img src="@(featured?.ImageUrl ?? "/images/service-studio.jpg")" alt="" />
+            <div class="service-preview__caption">
+                <p>@featured?.Description</p>
+                <a class="link-arrow link-arrow--on-image" href="#contact">
+                    EXPLORE SERVICE <span aria-hidden="true">&rarr;</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>

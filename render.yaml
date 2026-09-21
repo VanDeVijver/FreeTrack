@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: freetrack
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: frankfurt
+    # Free instances block outbound SMTP (587/465), so booking emails need a paid plan.
+    plan: 0.5c-512mb
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      # Neon connection string (direct, non-pooled host). Either postgresql:// URI or key=value works.
+      - key: ConnectionStrings__Default
+        sync: false
+      # Admin account created on first boot. Password needs 10+ chars with upper, lower, digit and symbol.
+      - key: Admin__Username
+        sync: false
+      - key: Admin__Password
+        sync: false
+      # Booking notification emails (Gmail SMTP + app password).
+      - key: Smtp__Username
+        sync: false
+      - key: Smtp__Password
+        sync: false
+      - key: Smtp__FromAddress
+        sync: false
+      - key: Smtp__AdminEmail
+        sync: false

@@ -1,0 +1,39 @@
+@model HomeViewModel
+
+<section class="hero">
+    <div class="hero__text">
+        <p class="kicker">@Model.HeroKicker</p>
+        <h1 class="display-heading">
+            @Model.HeroHeadingPlain
+            <span class="display-heading__accent">@Model.HeroHeadingAccent</span>
+        </h1>
+        <p class="hero__intro">@Model.HeroIntro</p>
+
+        <div class="hero__actions">
+            <a class="btn btn--primary" href="#diensten">Ontdek FreeTrack<span aria-hidden="true">&#8600;</span></a>
+            <a class="link-arrow" href="#contact">Vertel ons over je project <span aria-hidden="true">&rarr;</span></a>
+        </div>
+
+        <div class="hero__progress" aria-hidden="true">
+            <span>01</span>
+            <span class="hero__progress-bar"></span>
+            <span>04</span>
+        </div>
+    </div>
+
+    <div class="hero__image">
+        <img src="/images/hero.jpg" alt="" />
+        <span class="hero__image-tag">RECORD / MIX / MAKE</span>
+    </div>
+</section>
+
+<div class="ticker" aria-hidden="true">
+    @for (var i = 0; i < Model.TickerLabels.Count; i++)
+    {
+        <span class="ticker__item">@Model.TickerLabels[i]</span>
+        @if (i < Model.TickerLabels.Count - 1)
+        {
+            <span class="ticker__sep">*</span>
+        }
+    }
+</div>

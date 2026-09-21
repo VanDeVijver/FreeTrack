@@ -1,0 +1,79 @@
+@model HomeViewModel
+
+<section class="contact-section" id="contact">
+    <p class="kicker">GET IN TOUCH</p>
+    <h2 class="display-heading">
+        Vertel ons over<br />
+        <span class="display-heading__accent">je project.</span>
+    </h2>
+
+    @if (Model.ContactSubmitted)
+    {
+        <p class="contact-form__success" role="status">
+            Bedankt! We nemen zo snel mogelijk contact met je op.
+        </p>
+    }
+
+    <form asp-controller="Contact" asp-action="Submit" method="post" class="contact-form">
+        @Html.AntiForgeryToken()
+        <div class="contact-form__row">
+            <div class="contact-form__field">
+                <label asp-for="ContactForm.Name"></label>
+                <input asp-for="ContactForm.Name" />
+                <span asp-validation-for="ContactForm.Name" class="contact-form__error"></span>
+            </div>
+            <div class="contact-form__field">
+                <label asp-for="ContactForm.Email"></label>
+                <input asp-for="ContactForm.Email" type="email" />
+                <span asp-validation-for="ContactForm.Email" class="contact-form__error"></span>
+            </div>
+        </div>
+
+        <div class="contact-form__row">
+            <div class="contact-form__field">
+                <label asp-for="ContactForm.Phone"></label>
+                <input asp-for="ContactForm.Phone" />
+            </div>
+            <div class="contact-form__field">
+                <label asp-for="ContactForm.PreferredDate"></label>
+                <input asp-for="ContactForm.PreferredDate" type="date" />
+            </div>
+        </div>
+
+        <div class="contact-form__row">
+            <div class="contact-form__field">
+                <label asp-for="ContactForm.RoomId"></label>
+                <select asp-for="ContactForm.RoomId">
+                    <option value="">Geen voorkeur</option>
+                    @foreach (var room in Model.ContactForm.RoomOptions)
+                    {
+                        <option value="@room.Id">@room.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="contact-form__field">
+                <label asp-for="ContactForm.StudioServiceId"></label>
+                <select asp-for="ContactForm.StudioServiceId">
+                    <option value="">Geen voorkeur</option>
+                    @foreach (var service in Model.ContactForm.ServiceOptions)
+                    {
+                        <option value="@service.Id">@service.Category</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="contact-form__field">
+            <label asp-for="ContactForm.Message"></label>
+            <textarea asp-for="ContactForm.Message" rows="5"></textarea>
+            <span asp-validation-for="ContactForm.Message" class="contact-form__error"></span>
+        </div>
+
+        <button type="submit" class="btn btn--primary">Versturen <span aria-hidden="true">&rarr;</span></button>
+    </form>
+</section>
+
+<footer class="site-footer">
+    <span>FREETRACK &mdash; WETTEREN</span>
+    <span id="over">OVER FREETRACK</span>
+</footer>

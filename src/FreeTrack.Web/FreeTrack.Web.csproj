@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>FreeTrack.Web</RootNamespace>
+    <UserSecretsId>freetrack-web-secrets</UserSecretsId>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FreeTrack.Application\FreeTrack.Application.csproj" />
+    <ProjectReference Include="..\FreeTrack.Infrastructure\FreeTrack.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

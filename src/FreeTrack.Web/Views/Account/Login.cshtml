@@ -1,0 +1,27 @@
+@model LoginViewModel
+@{
+    ViewData["Title"] = "Admin login";
+}
+
+<section class="contact-section">
+    <p class="kicker">ADMIN</p>
+    <h1 class="display-heading">Log <span class="display-heading__accent">in.</span></h1>
+
+    <div asp-validation-summary="All" class="contact-form__error"></div>
+
+    <form asp-action="Login" method="post" class="contact-form">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="ReturnUrl" />
+
+        <div class="contact-form__field">
+            <label asp-for="Username"></label>
+            <input asp-for="Username" />
+        </div>
+        <div class="contact-form__field">
+            <label asp-for="Password"></label>
+            <input asp-for="Password" type="password" />
+        </div>
+
+        <button type="submit" class="btn btn--primary">Inloggen</button>
+    </form>
+</section>
