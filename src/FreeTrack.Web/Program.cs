@@ -35,9 +35,14 @@ builder.Services.AddScoped<IRoomService, RoomService>();
 builder.Services.AddScoped<IStudioServiceQueryService, StudioServiceQueryService>();
 builder.Services.AddScoped<IContactInquiryService, ContactInquiryService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
-builder.Services.AddScoped<IBookingNotificationService, BookingNotificationService>();
+// Typed client: 10s timeout so a slow email API can never stall a booking request.
+builder.Services.AddHttpClient<IBookingNotificationService, BookingNotificationService>(client =>
+{
+    client.BaseAddress = new Uri("https://api.resend.com/");
+    client.Timeout = TimeSpan.FromSeconds(10);
+});
 
-builder.Services.Configure<SmtpOptions>(builder.Configuration.GetSection("Smtp"));
+builder.Services.Configure<EmailOptions>(builder.Configuration.GetSection("Email"));
 
 // Keys live in the database: container disks are ephemeral, and losing them would
 // sign everyone out and invalidate open forms on every restart.

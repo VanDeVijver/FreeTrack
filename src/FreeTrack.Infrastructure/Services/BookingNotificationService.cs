@@ -1,5 +1,5 @@
-using System.Net;
-using System.Net.Mail;
+using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using FreeTrack.Application.Interfaces;
 using FreeTrack.Domain.Entities;
 using FreeTrack.Domain.Enums;
@@ -11,22 +11,26 @@ namespace FreeTrack.Infrastructure.Services;
 
 /// <summary>
 /// Always writes an AdminNotification row (so the dashboard works out of the box).
-/// Additionally attempts an SMTP send when Smtp:Host is configured — email failures
-/// are logged, never thrown, so they can't break the booking flow itself.
+/// Additionally sends an email through Resend's HTTPS API when Email:ApiKey is configured
+/// (Render's free plan blocks SMTP). Email failures are logged, never thrown, so they
+/// can't break the booking flow itself.
 /// </summary>
 public class BookingNotificationService : IBookingNotificationService
 {
     private readonly IAdminNotificationRepository _notifications;
-    private readonly SmtpOptions _smtp;
+    private readonly HttpClient _http;
+    private readonly EmailOptions _email;
     private readonly ILogger<BookingNotificationService> _logger;
 
     public BookingNotificationService(
         IAdminNotificationRepository notifications,
-        IOptions<SmtpOptions> smtp,
+        HttpClient http,
+        IOptions<EmailOptions> email,
         ILogger<BookingNotificationService> logger)
     {
         _notifications = notifications;
-        _smtp = smtp.Value;
+        _http = http;
+        _email = email.Value;
         _logger = logger;
     }
 
@@ -39,7 +43,7 @@ public class BookingNotificationService : IBookingNotificationService
         await _notifications.SaveChangesAsync(ct);
 
         await TrySendEmailAsync(
-            to: _smtp.AdminEmail,
+            to: _email.AdminEmail,
             subject: "Nieuwe boekingsaanvraag \u2014 FreeTrack",
             body: $"{summary}\n\n" +
                   $"E-mail klant: {booking.CustomerEmail}\n" +
@@ -69,22 +73,24 @@ public class BookingNotificationService : IBookingNotificationService
 
     private async Task TrySendEmailAsync(string? to, string subject, string body)
     {
-        if (string.IsNullOrWhiteSpace(to) || string.IsNullOrWhiteSpace(_smtp.Host))
+        if (string.IsNullOrWhiteSpace(to) || string.IsNullOrWhiteSpace(_email.ApiKey))
         {
-            _logger.LogInformation("SMTP not configured \u2014 skipping email. Would have sent to {To}: {Subject}", to, subject);
+            _logger.LogInformation("Email not configured \u2014 skipping email. Would have sent to {To}: {Subject}", to, subject);
             return;
         }
 
         try
         {
-            using var client = new SmtpClient(_smtp.Host, _smtp.Port)
+            using var request = new HttpRequestMessage(HttpMethod.Post, "emails")
             {
-                Credentials = new NetworkCredential(_smtp.Username, _smtp.Password),
-                EnableSsl = _smtp.EnableSsl,
-                Timeout = 10_000 // default is 100s; a blocked SMTP port must not stall the booking request
+                Content = JsonContent.Create(new { from = _email.FromAddress, to = new[] { to }, subject, text = body })
             };
-            using var mail = new MailMessage(_smtp.FromAddress ?? _smtp.Username ?? "noreply@freetrack.local", to, subject, body);
-            await client.SendMailAsync(mail);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _email.ApiKey);
+
+            using var response = await _http.SendAsync(request);
+            if (!response.IsSuccessStatusCode)
+                _logger.LogWarning("Email to {To} was rejected by Resend: {Status} {Body}",
+                    to, (int)response.StatusCode, await response.Content.ReadAsStringAsync());
         }
         catch (Exception ex)
         {
