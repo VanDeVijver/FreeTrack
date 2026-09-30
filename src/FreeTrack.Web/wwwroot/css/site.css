@@ -231,8 +231,7 @@ a { color: inherit; text-decoration: none; }
 /* ---- Rooms ------------------------------------------------------------------ */
 .rooms { padding: 96px var(--gutter) 48px; position: relative; }
 .rooms__coords { position: absolute; top: 96px; right: var(--gutter); font-size: 0.7rem; color: var(--color-text-muted); }
-.rooms__lede { max-width: 30ch; color: var(--color-text-muted); float: right; margin-top: -80px; }
-.rooms__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 32px 0; clear: both; }
+.rooms__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 32px 0; }
 
 .room-card {
   position: relative;
@@ -271,16 +270,6 @@ a { color: inherit; text-decoration: none; }
   position: absolute; z-index: 2; top: 50%; left: 50%;
   transform: translate(-50%, -50%);
 }
-
-.cta-band {
-  background: var(--color-accent-orange);
-  color: var(--color-text-dark);
-  text-align: center;
-  padding: 28px var(--gutter);
-  font-family: var(--font-display);
-  font-weight: 600;
-}
-.cta-band a { text-decoration: underline; }
 
 /* ---- Contact ------------------------------------------------------------------ */
 .contact-section { padding: 96px var(--gutter); max-width: 720px; margin: 0 auto; }
@@ -327,8 +316,7 @@ a { color: inherit; text-decoration: none; }
   .services__grid { grid-template-columns: 1fr; }
   .rooms__grid { grid-template-columns: 1fr; }
   .contact-form__row { grid-template-columns: 1fr; }
-  .rooms__lede { float: none; margin-top: 12px; }
-}
+  }
 
 /* ==========================================================================
    Booking calendar + admin dashboard
@@ -438,7 +426,6 @@ a { color: inherit; text-decoration: none; }
 .link-arrow { transition: text-underline-offset 0.2s var(--ease), color 0.2s var(--ease); }
 .link-arrow:hover { text-underline-offset: 7px; }
 .link-arrow--on-image:hover { color: var(--color-accent-lime); }
-.cta-band a:hover { text-decoration-thickness: 2px; }
 
 .site-nav__links a,
 .site-nav__links button { transition: color 0.2s var(--ease); }
