@@ -61,7 +61,8 @@ public class HomeController : Controller
         {
             Services = serviceVms,
             Rooms = roomVms,
-            ContactForm = form
+            ContactForm = form,
+            ContactSubmitted = TempData["ContactSubmitted"] is true
         };
     }
 

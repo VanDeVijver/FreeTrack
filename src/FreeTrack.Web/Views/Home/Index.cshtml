@@ -3,7 +3,8 @@
     ViewData["Title"] = "Home";
 }
 
-@await Html.PartialAsync("_Hero", Model)
-@await Html.PartialAsync("_Services", Model)
-@await Html.PartialAsync("_Rooms", Model)
-@await Html.PartialAsync("_Contact", Model)
+@* Full paths: ContactController re-renders this view when its form is invalid, and partial lookup there searches Views/Contact. *@
+@await Html.PartialAsync("~/Views/Home/_Hero.cshtml", Model)
+@await Html.PartialAsync("~/Views/Home/_Services.cshtml", Model)
+@await Html.PartialAsync("~/Views/Home/_Rooms.cshtml", Model)
+@await Html.PartialAsync("~/Views/Home/_Contact.cshtml", Model)

@@ -24,7 +24,7 @@ public class ContactController : Controller
     // Backs both "Vertel ons over je project" (hero) and "Contact Us" (room card) forms.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Submit(ContactFormViewModel form, CancellationToken ct)
+    public async Task<IActionResult> Submit([Bind(Prefix = "ContactForm")] ContactFormViewModel form, CancellationToken ct)
     {
         if (!ModelState.IsValid)
         {
