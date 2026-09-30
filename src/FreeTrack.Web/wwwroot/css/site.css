@@ -15,6 +15,8 @@
 
   --font-display: "Space Grotesk", "Georgia", serif;
   --font-body: "DM Sans", system-ui, sans-serif;
+  --font-accent: "Instrument Serif", "Georgia", serif;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
 
   --radius-card: 28px;
   --max-width: 1440px;
@@ -22,6 +24,9 @@
 }
 
 * { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+[id] { scroll-margin-top: 96px; } /* keep anchor targets clear of the sticky nav */
 
 body {
   margin: 0;
@@ -32,6 +37,7 @@ body {
 }
 
 img { max-width: 100%; display: block; }
+p { text-wrap: pretty; }
 
 a { color: inherit; text-decoration: none; }
 
@@ -51,6 +57,8 @@ a { color: inherit; text-decoration: none; }
   font-weight: 700;
   font-size: clamp(2.75rem, 6vw, 4.5rem);
   line-height: 1.02;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
   margin: 0 0 20px;
   color: var(--color-text-dark);
 }
@@ -59,8 +67,11 @@ a { color: inherit; text-decoration: none; }
   display: inline-block;
   color: var(--color-accent-orange);
   font-style: italic;
-  font-family: "Georgia", var(--font-display), serif; /* see SITE-ANALYSIS.md: the
-    accent word uses an italic serif look not achievable with Space Grotesk alone */
+  font-weight: 400;
+  font-size: 1.08em; /* Instrument Serif runs small next to Space Grotesk */
+  letter-spacing: -0.01em;
+  font-family: var(--font-accent); /* see SITE-ANALYSIS.md: the accent word uses an
+    italic serif look not achievable with Space Grotesk alone */
 }
 
 .btn {
@@ -142,6 +153,7 @@ a { color: inherit; text-decoration: none; }
   display: grid;
   grid-template-columns: minmax(320px, 42%) 1fr;
   min-height: 80vh;
+  min-height: 80dvh;
 }
 .hero__text { padding: 64px var(--gutter); display: flex; flex-direction: column; justify-content: center; }
 .hero__intro { max-width: 38ch; color: var(--color-text-muted); font-size: 1rem; }
@@ -175,7 +187,10 @@ a { color: inherit; text-decoration: none; }
 
 /* ---- Services -------------------------------------------------------------- */
 .services {
-  background: var(--color-bg-dark);
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse 60% 50% at 85% 0%, rgba(225, 123, 82, 0.08), transparent 70%),
+    var(--color-bg-dark);
   color: var(--color-text-light);
   padding: 96px var(--gutter);
 }
@@ -281,8 +296,16 @@ a { color: inherit; text-decoration: none; }
   padding: 12px 14px;
   border: 1px solid rgba(0,0,0,0.2);
   border-radius: 6px;
-  background: #fff;
+  background: #fbfaf7;
+  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease);
 }
+.contact-form__field input:hover,
+.contact-form__field select:hover,
+.contact-form__field textarea:hover { border-color: rgba(0,0,0,0.4); }
+.contact-form__field input:focus,
+.contact-form__field select:focus,
+.contact-form__field textarea:focus { border-color: var(--color-text-dark); background: #fff; outline: none; }
+.contact-form__field .input-validation-error { border-color: var(--color-accent-orange); }
 .contact-form__error { color: var(--color-accent-orange); font-size: 0.75rem; }
 .contact-form__success { background: var(--color-accent-lime); padding: 12px 16px; border-radius: 6px; font-weight: 600; }
 
@@ -336,6 +359,7 @@ a { color: inherit; text-decoration: none; }
 .calendar-nav a { font-size: 1.2rem; }
 
 .calendar-grid {
+  font-variant-numeric: tabular-nums;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
@@ -374,7 +398,7 @@ a { color: inherit; text-decoration: none; }
 .admin-tabs a { padding: 10px 4px; font-size: 0.85rem; font-weight: 600; color: var(--color-text-muted); }
 .admin-tabs a.is-active { color: var(--color-text-dark); border-bottom: 2px solid var(--color-accent-orange); }
 
-.admin-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.admin-table { font-variant-numeric: tabular-nums; width: 100%; border-collapse: collapse; font-size: 0.85rem; }
 .admin-table th { text-align: left; font-size: 0.7rem; letter-spacing: 0.06em; color: var(--color-text-muted); padding: 8px; border-bottom: 1px solid rgba(0,0,0,0.15); }
 .admin-table td { padding: 12px 8px; border-bottom: 1px solid rgba(0,0,0,0.08); vertical-align: top; }
 .admin-table__action-form { display: inline-block; margin-right: 8px; }
@@ -388,4 +412,62 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 700px) {
   .calendar-grid { grid-template-columns: repeat(7, 1fr); font-size: 0.65rem; }
   .admin-table { display: block; overflow-x: auto; }
+}
+
+/* ==========================================================================
+   Interaction states: hover, press, keyboard focus
+   ========================================================================== */
+
+:focus-visible { outline: 2px solid var(--color-accent-orange); outline-offset: 3px; }
+
+.skip-link {
+  position: absolute; left: 16px; top: -100px; z-index: 30;
+  background: var(--color-text-dark); color: var(--color-text-light);
+  padding: 10px 16px; border-radius: 6px; font-weight: 600;
+}
+.skip-link:focus { top: 16px; }
+
+.btn { transition: transform 0.2s var(--ease), background-color 0.2s var(--ease), color 0.2s var(--ease); }
+.btn:active { transform: translateY(1px) scale(0.98); }
+.btn--primary:hover { background: #33312e; }
+.btn--pill:hover { background: #ea9471; }
+.btn--reject:hover { background: var(--color-accent-orange); color: var(--color-text-dark); }
+.btn span[aria-hidden] { transition: transform 0.25s var(--ease); }
+.btn:hover span[aria-hidden] { transform: translateX(3px); }
+
+.link-arrow { transition: text-underline-offset 0.2s var(--ease), color 0.2s var(--ease); }
+.link-arrow:hover { text-underline-offset: 7px; }
+.link-arrow--on-image:hover { color: var(--color-accent-lime); }
+.cta-band a:hover { text-decoration-thickness: 2px; }
+
+.site-nav__links a,
+.site-nav__links button { transition: color 0.2s var(--ease); }
+.site-nav__links a:hover,
+.site-nav__links button:hover { color: var(--color-accent-orange); }
+
+.service-row:focus-visible { opacity: 1; outline-offset: -2px; }
+.service-row__arrow { transition: transform 0.25s var(--ease); }
+.service-row:hover .service-row__arrow,
+.service-row.is-active .service-row__arrow { transform: translate(2px, -2px); }
+
+.room-card__image { transition: transform 0.6s var(--ease); }
+.room-card:hover .room-card__image { transform: scale(1.04); }
+.room-card__arrow { transition: background-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease); }
+.room-card__arrow:hover { background: var(--color-text-light); color: var(--color-text-dark); transform: rotate(45deg); }
+
+.scroll-top { transition: transform 0.2s var(--ease), background-color 0.2s var(--ease); }
+.scroll-top:hover { transform: translateY(-2px); background: var(--color-accent-orange); color: var(--color-text-dark); }
+
+.room-switch__link { transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease); }
+.room-switch__link:not(.is-active):hover { border-color: var(--color-text-dark); }
+.calendar-nav a { transition: color 0.2s var(--ease); }
+.calendar-nav a:hover { color: var(--color-accent-orange); }
+.calendar-day { transition: transform 0.2s var(--ease); }
+.calendar-day--available:hover { transform: translateY(-2px); }
+.admin-tabs a { transition: color 0.2s var(--ease); }
+.admin-tabs a:hover { color: var(--color-text-dark); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { transition-duration: 0.01ms !important; }
 }

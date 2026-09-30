@@ -6,16 +6,21 @@
     <meta name="theme-color" content="#151414" />
     <meta name="description" content="FreeTrack — ruimte voor muziek, sound en creatieve projecten." />
     <title>@ViewData["Title"] - FreeTrack</title>
+    <meta property="og:title" content="@ViewData["Title"] - FreeTrack" />
+    <meta property="og:description" content="FreeTrack — ruimte voor muziek, sound en creatieve projecten." />
+    <meta property="og:image" content="@($"{Context.Request.Scheme}://{Context.Request.Host}/images/hero.jpg")" />
+    <link rel="icon" href="~/favicon.svg" type="image/svg+xml" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@1&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
+    <a class="skip-link" href="#main">Naar de inhoud</a>
     @await Html.PartialAsync("_Nav")
 
-    <main>
+    <main id="main">
         @RenderBody()
     </main>
 

@@ -21,7 +21,8 @@
             @foreach (var service in Model.Services)
             {
                 <li class="service-row @(service.IsFeatured ? "is-active" : "")"
-                    data-service-id="@service.Id" data-image="@service.ImageUrl">
+                    data-service-id="@service.Id" data-image="@service.ImageUrl"
+                    data-description="@service.Description" tabindex="0">
                     <span class="service-row__number">@service.Number</span>
                     <div class="service-row__body">
                         <span class="service-row__category">@service.Category</span>
